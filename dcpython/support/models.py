@@ -16,7 +16,7 @@ DONOR_LEVELS = (
 )
 
 DONATION_TYPES = (
-    ("B", "Bank Account"),
+#    ("B", "Bank Account"),
     ("C", "Credit Card"),
     ("P", "PayPal"),
     ("G", "Pledge"),
@@ -26,7 +26,7 @@ class Donor(models.Model):
     """
     Model for Donors to DCPYthon.
     """
-    name = models.CharField(max_length=100, verbose_name="Display Name")
+    name = models.CharField(max_length=100, verbose_name="Display Name", blank=True, null=True)
     url = models.URLField(blank=True, null=True, verbose_name="Display Url")
     email = models.EmailField()
     phone = PhoneNumberField(blank=True, null=True)
@@ -35,7 +35,6 @@ class Donor(models.Model):
     level = models.CharField(max_length=1, choices=DONOR_LEVELS, blank=True, null=True)
     logo = models.ImageField(upload_to="donor_logos", blank=True, null=True)
     secret = models.CharField(max_length=90)
-    balanced_uri = models.CharField(max_length=100)
 
     def save (self, *args, **kwargs):
         if not self.secret:
@@ -51,3 +50,4 @@ class Donation(models.Model):
     type = models.CharField(max_length=1, choices=DONATION_TYPES)
     completed = models.BooleanField(default=False)
     donation = models.DecimalField(decimal_places=2, max_digits=10)
+    transaction_id = models.CharField(max_length=50)

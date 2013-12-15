@@ -4,7 +4,7 @@ from django import forms
 class DonorForm(forms.ModelForm):
     class Meta:
         model = Donor
-        exclude = ["level", "secret", "slogan"]
+        exclude = ["level", "secret", "slogan", "balanced_uri"]
 
 class DonationForm(forms.Form):
     donation_type = forms.ChoiceField(choices=DONATION_TYPES, widget=forms.HiddenInput)
@@ -15,7 +15,7 @@ class DonationForm(forms.Form):
     def clean(self):
         cd = self.cleaned_data
         if cd["donation_type"] == "C" and not cd["cc_token"]:
-            raise forms.ValidationError()
+            raise forms.ValidationError("invalid credit card")
         elif cd["donation_type"] == "B" and not cd["bank_token"]:
-            raise forms.ValidationError()
+            raise forms.ValidationError("invalid bank information")
         return cd

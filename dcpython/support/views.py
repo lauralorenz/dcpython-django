@@ -1,4 +1,5 @@
-import balanced
+# import balanced
+import stripe
 import json
 
 from dcpython.support.forms import DonorForm, DonationForm
@@ -8,13 +9,11 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext, loader
 
-balanced.configure(settings.BALANCED_SECRET)
-
-# Create your views here.
+stripe.api_key = settings.STRIPE_PRIVATE
 
 def support(request):
     context = RequestContext(request)
-    context.update({"donor_form": DonorForm(), "donation_form": DonationForm, "balanced_uri": settings.BALANCED_URI })
+    context.update({"donor_form": DonorForm(), "donation_form": DonationForm, "stripe_public": settings.STRIPE_PUBLIC })
     return render(request, 'support/support.html', context)
 
 def donor_update(request, secret=None):
@@ -30,6 +29,11 @@ def donor_update(request, secret=None):
     return render(request, 'support/donor_update.html', context)
 
 def make_donation(request):
+    """
+    this method is called via ajax by the donate page. 
+    if form is invalid, returns form containing error messages else,
+    makes debit and redirects.
+    """
     if request.method != 'POST':
         return HttpResponse(json.dumps({"error": "only POST supported"}))
 
@@ -48,16 +52,22 @@ def make_donation(request):
     donation_data = donation_form.cleaned_data
     donation_type = donation_data["donation_type"]
     donation_amount = donation_data["donation"]
+    
+    donor_data = donor_form.cleaned_data
 
-    if donation_type == "C" or donation_type == "B":
-        if donation_type == "C":
-            account = balanced.Card.find(donation_data["cc_token"])
-        elif donation_type == "B":
+    if donation_type == "C":
 
-            account = balanced.BankAccount.find(donation_data["bank_token"])
-            account.verify()
-
-        resp = account.debit(amount=donation_amount, appears_on_statement_as="DCPython.org" )
+        # Create the charge on Stripe's servers - this will charge the user's card
+        try:
+          resp = stripe.Charge.create(
+              amount=donation_amount*100, # amount in cents, again
+              currency="usd",
+              card=donation_data['cc_token'],
+              description=donor_data['email']
+          )
+          print resp
+        except stripe.CardError as e:
+            print(e)
 
         return HttpResponse(json.dumps(resp))
 
