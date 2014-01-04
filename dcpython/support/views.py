@@ -3,11 +3,12 @@ import stripe
 import json
 
 from dcpython.support.forms import DonorForm, DonationForm
-from dcpython.support.models import Donor
+from dcpython.support.models import Donor, Donation
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext, loader
+import datetime
 
 stripe.api_key = settings.STRIPE_PRIVATE
 
@@ -65,9 +66,15 @@ def make_donation(request):
               card=donation_data['cc_token'],
               description=donor_data['email']
           )
-          print resp
         except stripe.CardError as e:
-            print(e)
+            resp = {"payment_error": str(e)}
+            return HttpResponse(json.dumps(resp))
 
+        # we have a completed charge. save donor and donation to db.
+        donor = donor_form.save()
+        donation = Donation(donor=donor, datetime=datetime.datetime.fromtimestamp(resp.created), type='C', completed=True, donation=resp.amount/100.0, transaction_id=resp.id)
+        donation.save()
+
+        resp = {'redirect': '/donor/{}'.format(donor.secret)}
         return HttpResponse(json.dumps(resp))
 

@@ -64,7 +64,6 @@
       </div>
 
       <div class="col-lg-4">
-
         <!-- donation amt form -->
         <form role="form" class="form-horizontal" style="margin-top:25px">
           <div class="form-group">
@@ -76,7 +75,7 @@
         </form>
 
         <!-- payment select form -->
-        <form class="form-inline" role="form" style="margin-top: 40px; margin-bottom: 40px; height: 34px;" id="payment-select-form">
+        <form class="form-inline" role="form" style="margin-top: 40px; margin-bottom: 16px; height: 34px;" id="payment-select-form">
           <div class="radio" id="donate_source">
             <label><input type="radio" name="donate_source" id="donate_source_C" value="C" checked="checked">Credit Card</label>
             <label><input type="radio" name="donate_source" id="donate_source_P" value="P">PayPal</label>
@@ -138,6 +137,7 @@
           <button type="submit" class="btn btn-primary" id="submit_btn">
             Submit
           </button>
+          <div id="error_msg" class="alert alert-danger hidden" style="margin-top: 15px;">...</div>
         </form>
       </div>
     </div>

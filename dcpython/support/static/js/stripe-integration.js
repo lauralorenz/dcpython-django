@@ -74,6 +74,8 @@ jQuery(function($) {
       // TODO this is not ideal b/c full form is not validated
       if (!/^[1-9][0-9]{0,5}(\.[0-9]{1,2})?$/.test(donation_amount)) {
         $("#donationAmt").parents(".form-group").addClass("has-error");
+
+        $('#error_msg').html("please fix the red errors and resubmit").removeClass('hidden');
         $("#submit_btn").attr("disabled", null);
         return false;
       }
@@ -102,10 +104,11 @@ jQuery(function($) {
             var k = resp.error.param;
             k = (k.indexOf("exp") >= 0) ? "exp" : k;
             $("#card_" + k).parents(".form-group").addClass("has-error");
+            $("#submit_btn").attr("disabled", null);
           } else {
             $("#id_cc_token").val(resp.id);
+            makeAjax();
           }
-          makeAjax();
         });
 
       }
@@ -120,12 +123,15 @@ jQuery(function($) {
         // data = JSON.stringify(data);
 
         $.post("/make_donation", data, function(resp) {
+          $('#payment_error').addClass('hidden');
           resp = JSON.parse(resp);
           if (resp.html) {
+            $('#error_msg').html("please fix the red errors and resubmit").removeClass('hidden');
             $("#master_donate_div").html(resp.html);
-          }
-          else if (resp.error) {
-            console.log("ERROR", resp.error);
+          } else if (resp.payment_error) {
+            $('#error_msg').html(resp.payment_error).removeClass('hidden');
+          } else if (resp.redirect) {
+            window.location.href = resp.redirect;
           }
         });
 
