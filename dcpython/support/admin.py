@@ -24,7 +24,7 @@ class NullLevelFilter(SimpleListFilter):
 
 class DonorAdmin(admin.ModelAdmin):
     readonly_fields = ("secret",)
-    list_display = ("name", "slogan", "url", "level",)
+    list_display = ("name", "email", "public_url", "level",)
     list_filter = (NullLevelFilter,)
 
 admin.site.register(Donor, DonorAdmin)

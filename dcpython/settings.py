@@ -1,7 +1,9 @@
 import os
 env = os.environ
 
-BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+# base of repo
+BASE_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+# path to root django app
 ROOT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 
 MEETUP_API_KEY = env.get("MEETUP_API_KEY", "5b7d196f674c6d74514b1c45dc4a4f")
@@ -72,12 +74,12 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = os.path.join(ROOT_DIR, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = ''
+MEDIA_URL = '/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files

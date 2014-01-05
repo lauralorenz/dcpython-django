@@ -2,7 +2,7 @@
 import stripe
 import json
 
-from dcpython.support.forms import DonorForm, DonationForm
+from dcpython.support.forms import DonorForm, PublicDonorForm, DonationForm
 from dcpython.support.models import Donor, Donation
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
@@ -21,12 +21,16 @@ def donor_update(request, secret=None):
     donor = get_object_or_404(Donor, secret=secret)
     if request.method == 'POST':
         form = DonorForm(request.POST, instance=donor)
-        if form.is_valid():
-            form.save()
+        public_form = PublicDonorForm(request.POST, request.FILES, instance=donor)
+        if form.is_valid() and public_form.is_valid():
+            donor = form.save()
+            # public_form = PublicDonorForm(request.POST, request.FILES, instance=donor)
+            donor = public_form.save()
     else:
         form = DonorForm(instance=donor)
+        public_form = PublicDonorForm(instance=donor)
     context = RequestContext(request)
-    context.update({"secret": secret, "form": form, "name": donor.name})
+    context.update({"secret": secret, "form": form, "public_form": public_form, "name": donor.name, 'donor': donor})
     return render(request, 'support/donor_update.html', context)
 
 def make_donation(request):

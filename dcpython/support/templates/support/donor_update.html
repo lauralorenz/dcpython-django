@@ -5,19 +5,55 @@
 {% block content %}
 {% load bootstrap3 %}
     <div class="container">
-      <!-- Example row of columns -->
       <div class="row">
-        <div class="col-lg-12">
-          <form action="/donor/{{ secret }}/" method="post" class="form">
-            {% csrf_token %}
-            {% bootstrap_form form %}
+        <form enctype="multipart/form-data" action="/donor/{{ secret }}/" method="post" class="form">
+          <div class="col-lg-12">
+            <h1>Thank you for your support</h1>
+            {% if not pending %}
+              <div class="alert alert-warning">
+                Your Donation is being processed. It may take several days before it is reflected on the website.
+              </div>
+            {% endif %}
+          </div>
+          <div class="col-lg-4">
+            <fieldset>
+              <legend>Private</legend>
+              {% csrf_token %}
+              {% bootstrap_form form %}
+            </fieldset>
+          </div>
+          <div class="col-lg-4">
+            <fieldset>
+              <legend>Public</legend>
+              {% bootstrap_form public_form %}
+            </fieldset>
+            <button type="submit" class="btn btn-primary">
+              Submit
+            </button>
+          </div>
+          <div class="col-lg-4">
+            <fieldset>
+              <legend>Acknowledgment Preview</legend>
+              {% if donor.public_url %}
+                <a href="{{ donor.public_url }}">
+              {% endif %}
+              {% if donor.public_logo %}
+                <img src="{{ donor.public_logo.url }}" style="width:100%;height:auto;" alt="{{ donor.public_name }}" title="{{ donor.public_name }}" />
+              {% endif %}
+              {% if donor.public_url %}
+                </a>
+              {% endif %}
+              {% if donor.public_slogan %}
+                {{ donor.public_slogan }}
+              {% endif %}
+              {% if not donor.public_name and not donor.public_logo %}
+                Anonymous donor
+              {% endif %}
+            </fieldset>
+          </div>
 
-              <button type="submit" class="btn btn-primary">
-                Submit
-              </button>
 
-          </form>
-        </div>
+        </form>
       </div>
     </div>
 {% endblock %}
