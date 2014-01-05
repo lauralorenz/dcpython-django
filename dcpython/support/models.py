@@ -41,9 +41,12 @@ DONATION_TYPES = (
 
 class DonorManager(models.Manager):
     def active(self):
+        """ return all active donors - that is donors who have been reviewed and have at least one valid, reviwed donation """
+        # it is quite possible this query does not actually do what I hope it does.
         return self.filter(reviewed=True, donations__reviewed=True).filter(Q(valid_until__gte=date.today()) | Q(donations__valid_until__gte=date.today()))
 
     def random(self):
+        """ return one active donor chosen at random, weighted by their level's minimum donation amount """
         donors = self.active()
         bag = []
         for donor in donors:
@@ -64,10 +67,10 @@ class Donor(models.Model):
     public_logo = models.ImageField(upload_to="donor_logos", verbose_name="Display Logo", blank=True, null=True)
 
 
-    level = models.CharField(max_length=1, choices=DONOR_LEVELS, blank=True, null=True)
+    level = models.CharField(max_length=1, choices=DONOR_LEVELS, blank=True, null=True, help_text="Override levels specified by donations if not past 'valid until'")
     secret = models.CharField(max_length=90)
     reviewed = models.BooleanField(default=False)
-    valid_until = models.DateField(blank=True, null=True)
+    valid_until = models.DateField(blank=True, null=True, help_text="Specify a date until which the level specified for the donor is valid. After, donation levels will control.")
 
     objects = DonorManager()
     def save (self, *args, **kwargs):
