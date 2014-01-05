@@ -7,15 +7,30 @@ from PIL import Image
 import imghdr
 import StringIO
 from django.core.files.base import ContentFile
+from datetime import date
+from django.db.models import Q
+import random
 
-DONOR_LEVELS = (
-    ("P", "Platinum ($1000)"),
-    ("G", "Gold ($500)"),
-    ("S", "Silver ($250)"),
-    ("B", "Bronze ($100)"),
-    ("I", "Individual ($50)"),
-    ("O", "Other")
+LEVEL_DATA = (
+    ("P", "Platinum", 1000),
+    ("G", "Gold", 500),
+    ("S", "Silver", 250),
+    ("B", "Bronze", 100),
+    ("I", "Individual", 50),
+    ("O", "Other", 0)
 )
+
+DONOR_LEVELS = [(code, "{} (${})".format(name, value),) for code, name, value in LEVEL_DATA]
+
+DL_INDEX = {
+    'P': 0,
+    'G': 1,
+    'S': 2,
+    'B': 3,
+    'I': 4,
+    'O': 5,
+    None: 6,
+}
 
 DONATION_TYPES = (
 #    ("B", "Bank Account"),
@@ -23,6 +38,17 @@ DONATION_TYPES = (
     ("P", "PayPal"),
     ("G", "Pledge"),
 )
+
+class DonorManager(models.Manager):
+    def active(self):
+        return self.filter(reviewed=True, donations__reviewed=True).filter(Q(valid_until__gte=date.today()) | Q(donations__valid_until__gte=date.today()))
+
+    def random(self):
+        donors = self.active()
+        bag = []
+        for donor in donors:
+            bag += donor.get_level()[2]/50 * [donor]
+        return random.choice(bag)
 
 class Donor(models.Model):
     """
@@ -43,13 +69,14 @@ class Donor(models.Model):
     reviewed = models.BooleanField(default=False)
     valid_until = models.DateField(blank=True, null=True)
 
+    objects = DonorManager()
     def save (self, *args, **kwargs):
         # ensure there is a secret
         if not self.secret:
             self.secret = base64.urlsafe_b64encode(os.urandom(64))
         # ensure the image is in a valid format
-        image = self.public_logo.file
         if self.public_logo:
+            image = self.public_logo.file
             valid_image = self.process_image(image)
             if valid_image != image:
                 self.public_logo.save("{}.png".format(self.pk), valid_image, save=False)
@@ -86,12 +113,24 @@ class Donor(models.Model):
 
         # generate a png
         string_file = StringIO.StringIO()
-        new_image.save(string_file, "PNG")
+        image.save(string_file, "PNG")
         string_file.seek(0)
         f = ContentFile(string_file.read())
         return f
 
+    def get_level(self):
+        """ return the current donor level - it is the donor's level if exists and unexpired or the highest active donation level"""
+        if self.level and self.valid_until and self.valid_until >= date.today():
+            return LEVEL_DATA[DL_INDEX[self.level]]
+
+        level = DL_INDEX[None]
+        for donation in self.donations.filter(reviewed=True, valid_until__gte=date.today()):
+            level = min(level, DL_INDEX[donation.level])
+
+        return LEVEL_DATA[level] if level != DL_INDEX[None] else None
+
     def pending(self):
+        """ return whether the donor or one of their donations is pending review """
         return not self.reviewed or self.donations.filter(reviewed=False).count()
 
     def __unicode__(self):
@@ -114,6 +153,14 @@ class Donation(models.Model):
     valid_until = models.DateField(blank=True, null=True)
     level = models.CharField(max_length=1, choices=DONOR_LEVELS, blank=True, null=True)
     reviewed = models.BooleanField(default=False)
+
+    def save (self, *args, **kwargs):
+        if not self.level:
+            for lvl in LEVEL_DATA:
+                if self.donation >= lvl[2]:
+                    self.level = lvl[0]
+                    break
+        super(Donation, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return u"${} donation from {} on {}".format(self.donation, self.donor.public_name or self.donor.name, self.datetime)

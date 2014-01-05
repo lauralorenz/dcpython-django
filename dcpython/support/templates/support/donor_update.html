@@ -34,21 +34,7 @@
           <div class="col-lg-4">
             <fieldset>
               <legend>Acknowledgment Preview</legend>
-              {% if donor.public_url %}
-                <a href="{{ donor.public_url }}">
-              {% endif %}
-              {% if donor.public_logo %}
-                <img src="{{ donor.public_logo.url }}" style="width:100%;height:auto;" alt="{{ donor.public_name }}" title="{{ donor.public_name }}" />
-              {% endif %}
-              {% if donor.public_url %}
-                </a>
-              {% endif %}
-              {% if donor.public_slogan %}
-                {{ donor.public_slogan }}
-              {% endif %}
-              {% if not donor.public_name and not donor.public_logo %}
-                Anonymous donor
-              {% endif %}
+              {% include "support/donor_acknowledgement.html" %}
             </fieldset>
           </div>
 

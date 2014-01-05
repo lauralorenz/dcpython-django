@@ -1,10 +1,11 @@
 from django.shortcuts import get_object_or_404, render
-
+from dcpython.support.models import Donor
 from dcpython.events.models import Event
 
 def home(request):
     upcoming = Event.objects.upcoming()[:3]
-    return render(request, 'app/home.html', {"upcoming": upcoming})
+    donor = Donor.objects.random()
+    return render(request, 'app/home.html', {"upcoming": upcoming, "donor": donor, "donor_level": donor.get_level()[1]})
 
 def about(request):
     return render(request, 'app/about.html')

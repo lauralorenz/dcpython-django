@@ -5,16 +5,24 @@ import json
 from dcpython.support.forms import DonorForm, PublicDonorForm, DonationForm
 from dcpython.support.models import Donor, Donation
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext, loader
 import datetime
-
 stripe.api_key = settings.STRIPE_PRIVATE
 
 def support(request):
+    # get all donors that are not pending and that have a valid donation
+    all_donors = Donor.objects.active()
+
+    # create a dict of all active donors, sorted into their respective levels
+    levels = {}
+    for donor in all_donors:
+        donors = levels.setdefault(donor.get_level()[1], [])
+        donors.append(donor)
+
     context = RequestContext(request)
-    context.update({"donor_form": DonorForm(), "donation_form": DonationForm, "stripe_public": settings.STRIPE_PUBLIC })
+    context.update({"donor_form": DonorForm(), "donation_form": DonationForm, "stripe_public": settings.STRIPE_PUBLIC, "levels": levels })
     return render(request, 'support/support.html', context)
 
 def donor_update(request, secret=None):
