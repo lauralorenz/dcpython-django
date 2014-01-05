@@ -9,7 +9,7 @@
         <form enctype="multipart/form-data" action="/donor/{{ secret }}/" method="post" class="form">
           <div class="col-lg-12">
             <h1>Thank you for your support</h1>
-            {% if not pending %}
+            {% if donor.pending %}
               <div class="alert alert-warning">
                 Your Donation is being processed. It may take several days before it is reflected on the website.
               </div>

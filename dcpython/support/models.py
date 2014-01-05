@@ -9,11 +9,11 @@ import StringIO
 from django.core.files.base import ContentFile
 
 DONOR_LEVELS = (
-    ("P", "Platinum"),
-    ("G", "Gold"),
-    ("S", "Silver"),
-    ("B", "Bronze"),
-    ("I", "Individual"),
+    ("P", "Platinum ($1000)"),
+    ("G", "Gold ($500)"),
+    ("S", "Silver ($250)"),
+    ("B", "Bronze ($100)"),
+    ("I", "Individual ($50)"),
     ("O", "Other")
 )
 
@@ -91,11 +91,20 @@ class Donor(models.Model):
         f = ContentFile(string_file.read())
         return f
 
+    def pending(self):
+        return not self.reviewed or self.donations.filter(reviewed=False).count()
+
+    def __unicode__(self):
+        if self.public_name:
+            return u"{} (contact: {}, {})".format(self.public_name, self.name, self.email)
+        else:
+            return u"{} ({})".format(self.name, self.email)
+
 class Donation(models.Model):
     """
     Model representing one donation
     """
-    donor = models.ForeignKey(Donor)
+    donor = models.ForeignKey(Donor, related_name='donations')
     datetime = models.DateTimeField()
     type = models.CharField(max_length=1, choices=DONATION_TYPES)
     completed = models.BooleanField(default=False)
@@ -105,3 +114,6 @@ class Donation(models.Model):
     valid_until = models.DateField(blank=True, null=True)
     level = models.CharField(max_length=1, choices=DONOR_LEVELS, blank=True, null=True)
     reviewed = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return u"${} donation from {} on {}".format(self.donation, self.donor.public_name or self.donor.name, self.datetime)
