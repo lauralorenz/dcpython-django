@@ -51,7 +51,7 @@ class DonorManager(models.Manager):
         bag = []
         for donor in donors:
             bag += donor.get_level()[2]/50 * [donor]
-        return random.choice(bag)
+        return random.choice(bag) if bag else None
 
 class Donor(models.Model):
     """

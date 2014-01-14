@@ -5,7 +5,7 @@ from dcpython.events.models import Event
 def home(request):
     upcoming = Event.objects.upcoming()[:3]
     donor = Donor.objects.random()
-    return render(request, 'app/home.html', {"upcoming": upcoming, "donor": donor, "donor_level": donor.get_level()[1]})
+    return render(request, 'app/home.html', {"upcoming": upcoming, "donor": donor, "donor_level": donor.get_level()[1] if donor else None})
 
 def about(request):
     return render(request, 'app/about.html')
