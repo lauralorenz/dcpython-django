@@ -108,7 +108,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '!a7_kr2zeol$1f1znql=#+z-eonwy1%t1%3$u@_r4dhnn=_gmx'
+SECRET_KEY = env.get('SECRET_KEY', 'NOTASECRET')
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -167,6 +167,21 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
+
+if env.get("CLOUDFILES_CONTAINER_STATIC"):
+    INSTALLED_APPS += ('cumulus',)
+
+    CUMULUS = {
+        'USERNAME': env['RACKSPACE_CLOUD_USERNAME'],
+        'API_KEY': env['RACKSPACE_CLOUD_API_KEY'],
+        'CONTAINER': env['CLOUDFILES_CONTAINER_MEDIA'],
+        'STATIC_CONTAINER': env['CLOUDFILES_CONTAINER_STATIC'],
+        'SERVICENET': False,
+        'FILTER_LIST': [],
+    }
+
+    DEFAULT_FILE_STORAGE = 'cumulus.storage.SwiftclientStorage'
+    STATICFILES_STORAGE = 'cumulus.storage.SwiftclientStaticStorage'
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
