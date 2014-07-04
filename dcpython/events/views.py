@@ -8,7 +8,7 @@ from django.views.generic.dates import YearArchiveView, MonthArchiveView, DateDe
 def event_list(request):
     upcoming = Event.objects.upcoming()
     past = Event.objects.past()
-    years = Event.objects.dates('start_time', 'year', order="DESC")
+    years = Event.objects.datetimes('start_time', 'year', order="DESC")
 
     ctx = {"upcoming": upcoming,
            "past": past,
