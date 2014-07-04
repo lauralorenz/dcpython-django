@@ -7,7 +7,7 @@ static==0.4
 django-bootstrap3==1.0.0
 UniversalClient==0.5.2
 google-api-python-client==1.2
-Pillow==2.2.1
+Pillow==2.5.0
 python-dateutil==2.1
 django-localflavor==1.0
 South==0.8.2
