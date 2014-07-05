@@ -8,52 +8,33 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'User'
-        db.create_table(u'app_user', (
+        # Adding model 'Post'
+        db.create_table(u'blog_post', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('password', self.gf('django.db.models.fields.CharField')(max_length=128)),
-            ('last_login', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('is_superuser', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('username', self.gf('django.db.models.fields.CharField')(unique=True, max_length=30)),
-            ('first_name', self.gf('django.db.models.fields.CharField')(max_length=30, blank=True)),
-            ('last_name', self.gf('django.db.models.fields.CharField')(max_length=30, blank=True)),
-            ('email', self.gf('django.db.models.fields.EmailField')(max_length=75, blank=True)),
-            ('is_staff', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('is_active', self.gf('django.db.models.fields.BooleanField')(default=True)),
-            ('date_joined', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('meetup_username', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
-            ('meetup_id', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
+            ('title', self.gf('django.db.models.fields.CharField')(max_length=150)),
+            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=200)),
+            ('teaser', self.gf('markupfield.fields.MarkupField')(rendered_field=True)),
+            ('body', self.gf('markupfield.fields.MarkupField')(rendered_field=True)),
+            ('teaser_markup_type', self.gf('django.db.models.fields.CharField')(default='markdown', max_length=30)),
+            ('body_markup_type', self.gf('django.db.models.fields.CharField')(default='markdown', max_length=30)),
+            ('_teaser_rendered', self.gf('django.db.models.fields.TextField')()),
+            ('draft', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('_body_rendered', self.gf('django.db.models.fields.TextField')()),
+            ('published', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('author', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['app.User'])),
         ))
-        db.send_create_signal(u'app', ['User'])
+        db.send_create_signal(u'blog', ['Post'])
 
-        # Adding M2M table for field groups on 'User'
-        m2m_table_name = db.shorten_name(u'app_user_groups')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('user', models.ForeignKey(orm[u'app.user'], null=False)),
-            ('group', models.ForeignKey(orm[u'auth.group'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['user_id', 'group_id'])
-
-        # Adding M2M table for field user_permissions on 'User'
-        m2m_table_name = db.shorten_name(u'app_user_user_permissions')
-        db.create_table(m2m_table_name, (
-            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('user', models.ForeignKey(orm[u'app.user'], null=False)),
-            ('permission', models.ForeignKey(orm[u'auth.permission'], null=False))
-        ))
-        db.create_unique(m2m_table_name, ['user_id', 'permission_id'])
+        # Adding unique constraint on 'Post', fields ['published', 'slug']
+        db.create_unique(u'blog_post', ['published', 'slug'])
 
 
     def backwards(self, orm):
-        # Deleting model 'User'
-        db.delete_table(u'app_user')
+        # Removing unique constraint on 'Post', fields ['published', 'slug']
+        db.delete_unique(u'blog_post', ['published', 'slug'])
 
-        # Removing M2M table for field groups on 'User'
-        db.delete_table(db.shorten_name(u'app_user_groups'))
-
-        # Removing M2M table for field user_permissions on 'User'
-        db.delete_table(db.shorten_name(u'app_user_user_permissions'))
+        # Deleting model 'Post'
+        db.delete_table(u'blog_post')
 
 
     models = {
@@ -88,6 +69,21 @@ class Migration(SchemaMigration):
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         },
+        u'blog.post': {
+            'Meta': {'ordering': "('published',)", 'unique_together': "(('published', 'slug'),)", 'object_name': 'Post'},
+            '_body_rendered': ('django.db.models.fields.TextField', [], {}),
+            '_teaser_rendered': ('django.db.models.fields.TextField', [], {}),
+            'author': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['app.User']"}),
+            'body': ('markupfield.fields.MarkupField', [], {'rendered_field': 'True'}),
+            'body_markup_type': ('django.db.models.fields.CharField', [], {'default': "'markdown'", 'max_length': '30'}),
+            'draft': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'published': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '200'}),
+            'teaser': ('markupfield.fields.MarkupField', [], {'rendered_field': 'True'}),
+            'teaser_markup_type': ('django.db.models.fields.CharField', [], {'default': "'markdown'", 'max_length': '30'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '150'})
+        },
         u'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
@@ -97,4 +93,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['app']
+    complete_apps = ['blog']

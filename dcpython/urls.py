@@ -9,6 +9,7 @@ urls = ()
 urlpatterns = patterns('',
     url(r'^$', 'dcpython.app.views.home', name='home'),
     url(r'^events/', include("dcpython.events.urls")),
+    url(r'^blog/', include("dcpython.blog.urls")),
     # FIXME: refactor all donation views into support/urls.py, consider renaming app
     url(r'^donate/$', 'dcpython.support.views.support', name='support'),
     url(r'^donor/(?P<secret>[\w\-_]+=?=?=?)/$', 'dcpython.support.views.donor_update', name='donor_update'),

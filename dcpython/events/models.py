@@ -8,6 +8,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.text import slugify
 from django.utils.timezone import now
+from django.utils import timezone
 
 from dcpython.app.integration.meetup import get_upcoming_events, get_past_events
 
@@ -34,7 +35,6 @@ class Venue(models.Model):
     def create_from_meetup(cls, meetup_data):
         meetup_data['meetup_id'] = meetup_data.pop('id')
         meetup_data['zip_code'] = meetup_data.pop('zip', '')
-        print meetup_data
         try:
             venue = cls.objects.get(meetup_id=meetup_data['meetup_id'])
         except cls.DoesNotExist:
@@ -85,11 +85,15 @@ class Event(models.Model):
         get_latest_by = 'start_time'
         unique_together = (('start_time', 'slug'))
 
+    @property
+    def local_start_time(self):
+        current_tz = timezone.get_current_timezone()
+        return self.start_time.astimezone(current_tz)
+
     @classmethod
     def sync_from_meetup(cls):
         for i in chain(get_past_events(), get_upcoming_events()):
             event, created = cls.objects.get_or_create(meetup_id=i['id'])
-
             for j in ('name', 'description', 'start_time', 'end_time'):
                 setattr(event, j, i.get(j))
 
@@ -106,6 +110,6 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         return reverse('event-detail', kwargs={'slug': self.slug,
-                                               'year': self.start_time.year,
-                                               'month': self.start_time.month,
-                                               'day': self.start_time.day})
+                                               'year': self.local_start_time.year,
+                                               'month': self.local_start_time.month,
+                                               'day': self.local_start_time.day})
