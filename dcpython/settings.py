@@ -22,11 +22,13 @@ STRIPE_PRIVATE = get_secret("STRIPE_PRIVATE", "sk_test_zuwbBUyf1nDRwjaVNFxLAHil"
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = get_secret('SENDGRID_USERNAME')
-EMAIL_HOST_PASSWORD = get_secret('SENDGRID_PASSWORD')
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+if 'SENDGRID_USERNAME' in os.environ:
+    EMAIL_HOST = 'smtp.sendgrid.net'
+    EMAIL_HOST_USER = get_secret('SENDGRID_USERNAME')
+    EMAIL_HOST_PASSWORD = get_secret('SENDGRID_PASSWORD')
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
 
 ADMINS = (
@@ -224,6 +226,13 @@ CUMULUS = {
     'PYRAX_IDENTITY_TYPE': 'rackspace',
 }
 
+if 'RACKSPACE_CLOUD_USERNAME' in os.environ:
+    DEFAULT_FILE_STORAGE = 'cumulus.storage.SwiftclientStorage'
+    STATICFILES_STORAGE = 'cumulus.storage.SwiftclientStaticStorage'
+else:
+    INSTALLED_APPS.remove('cumulus')
+    STATIC_URL = '/static/'
+
 # load sample data
 if "DATABASE_URL" in os.environ:
     FIXTURE_DIRS = (
@@ -231,12 +240,7 @@ if "DATABASE_URL" in os.environ:
     )
 
 if VAGRANT:
-    EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
-    INSTALLED_APPS.remove('cumulus')
     INSTALLED_APPS.remove('djangosecure')
-    STATIC_URL = '/static/'
 else:
-    DEFAULT_FILE_STORAGE = 'cumulus.storage.SwiftclientStorage'
-    STATICFILES_STORAGE = 'cumulus.storage.SwiftclientStaticStorage'
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
