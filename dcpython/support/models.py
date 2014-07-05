@@ -46,7 +46,7 @@ DL_INDEX = {
 DONATION_TYPES = (
 #    ("B", "Bank Account"),
     ("C", "Credit Card"),
-    ("P", "PayPal"),
+#    ("P", "PayPal"),
     ("G", "Pledge"),
 )
 
