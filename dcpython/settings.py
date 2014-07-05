@@ -1,13 +1,18 @@
 import os
 env = os.environ
 
-BASE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+# base of repo
+BASE_DIR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+# path to root django app
+ROOT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 
 MEETUP_API_KEY = env.get("MEETUP_API_KEY", "5b7d196f674c6d74514b1c45dc4a4f")
 GOOGLE_API_KEY = env.get("GOOGLE_API_KEY", "AIzaSyAI0V0ZxALAxiDf1gpOywhj_REJHcu_sAU")
 YOUTUBE_CHANNEL_ID = os.environ.get('YOUTUBE_CHANNEL_ID', 'UCGQZd1FaRdbZGnOuzh_n9Zg')
-BALANCED_URI = env.get("BALANCED_URI", "/v1/marketplaces/TEST-MP4xsJ9r6w8jzy6aD38AMms8")
-BALANCED_SECRET = env.get("BALANCED_SECRET", "ak-test-T0L0y34t8N1NGqE4xYEz2kCdOZFFBPnb")
+# BALANCED_URI = env.get("BALANCED_URI", "/v1/marketplaces/TEST-MP4xsJ9r6w8jzy6aD38AMms8")
+# BALANCED_SECRET = env.get("BALANCED_SECRET", "ak-test-T0L0y34t8N1NGqE4xYEz2kCdOZFFBPnb")
+STRIPE_PUBLIC = env.get("STRIPE_PUBLIC", "pk_test_PqW3MffbT30GKcBFxChXmRXn")
+STRIPE_PRIVATE = env.get("STRIPE_PRIVATE", "sk_test_zuwbBUyf1nDRwjaVNFxLAHil")
 
 # Django settings for dcpython project.
 
@@ -69,12 +74,12 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = os.path.join(ROOT_DIR, 'media')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = ''
+MEDIA_URL = '/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
@@ -91,7 +96,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    # os.path.join(BASE_DIR, 'static'),
+    os.path.join(ROOT_DIR, 'static'),
 )
 
 # List of finder classes that know how to find static files in
@@ -118,6 +123,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'djangosecure.middleware.SecurityMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -142,7 +148,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'django.core.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
-    'app.context_processors.path_hierarchy',
+    'dcpython.app.context_processors.path_hierarchy',
 )
 
 INSTALLED_APPS = (
@@ -152,11 +158,14 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'djangosecure',
     'bootstrap3',
-    'app',
-    'events',
-    'support',
+    'dcpython.app',
+    'dcpython.events',
+    'dcpython.support',
     'django.contrib.admin',
+    'south',
+    'localflavor'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
@@ -198,3 +207,5 @@ if "DATABASE_URL" in os.environ:
        '/vagrant/dcpython/fixtures',
     )
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
