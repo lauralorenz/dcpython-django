@@ -48,6 +48,6 @@ class Post(models.Model):
         super(Post, self).save(*args, **kwargs)
 
     class Meta:
-        ordering = ('published',)
+        ordering = ('-published',)
         get_latest_by = 'published'
         unique_together = (('published', 'slug'))

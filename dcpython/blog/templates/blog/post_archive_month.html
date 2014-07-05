@@ -14,8 +14,9 @@
             <h1>Posts for {{ month|date:"F Y" }}</h1>
         </div>
         {% for post in object_list %}
-        <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
-        {% include "blog/post-tagline.html" %}
+            <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+            {% include "blog/post-tagline.html" %}
         {% endfor %}
     </div>
+  {% include "blog/post-count-js.html" %}
 {% endblock %}

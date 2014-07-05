@@ -11,55 +11,77 @@
 {% block breadcrumbs-container %}{% endblock breadcrumbs-container %}
 
 {% block content %}
-    <div class="jumbotron text-center">
-        <div class="container">
-            <img src="https://raw.github.com/DCPython/dcpython-django/master/dcpython.png">
-            <p>We promote and support the use of Python software in DC</p>
-        </div>
-    </div>
+  <div class="jumbotron text-center">
+      <div class="container">
+          <img src="https://raw.github.com/DCPython/dcpython-django/master/dcpython.png">
+          <p>We promote and support the use of Python software in DC</p>
+      </div>
+  </div>
 
-    <div class="container">
-      <!-- Example row of columns -->
-      <div class="row">
-        <div class="col-lg-4">
-          <h2><a href="{% url 'event-list' %}">Events</a></h2>
+  <div class="container">
+    <!-- Example row of columns -->
+    <div class="row">
+      <div class="col-lg-4">
+        <h2><a href="{% url 'event-list' %}">Events</a></h2>
 
-          <div id="events" class="panel-group">
-              {% for event in upcoming %}
-                  <div class="panel panel-default">
-                      <div class="panel-heading">
-                          <h3 class="panel-title">
-                              <a href="{{ event.get_absolute_url }}">
-                                  {{ event.name }}
-                                  <time datetime="{{ event.start_time.isoformat }}">{{ event.start_time|date:"D M dS, P" }}</time>
-                              </a>
-                              <a data-toggle="collapse" data-parent="#events" class="accordion-toggle" href="#event-{{ forloop.counter }}-collapse">
-                                  <span class="glyphicon glyphicon-collapse-down"></span>
-                              </a>
-                          </h3>
-                      </div>
-                      <div id="event-{{ forloop.counter }}-collapse" class="panel-collapse collapse">
-                          <div class="panel-body">
-                              {% display_event event omit_title=True omit_time=True omit_youtube=True %}
-                          </div>
-                      </div>
-                  </div>
-              {% endfor %}
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <h2>News</h2>
-          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-          <p><a class="btn btn-default" href="#">View details &raquo;</a></p>
-       </div>
-        <div class="col-lg-4">
-          <h2>Donate</h2>
-          <button type="button" class="btn btn-primary btn-lg">Donate Now</button>
-          {% if donor %}
-            <h3>Featured {{ donor_level }} Sponsor:</h3>
-            {% include "support/donor_acknowledgement.html" %}
-          {% endif %}
+        <div id="events" class="panel-group">
+            {% for event in upcoming %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            <a href="{{ event.get_absolute_url }}">
+                                {{ event.name }}
+                                <time datetime="{{ event.start_time.isoformat }}">{{ event.start_time|date:"D M dS, P" }}</time>
+                            </a>
+                            <a data-toggle="collapse" data-parent="#events" class="accordion-toggle" href="#event-{{ forloop.counter }}-collapse">
+                                <span class="glyphicon glyphicon-collapse-down"></span>
+                            </a>
+                        </h3>
+                    </div>
+                    <div id="event-{{ forloop.counter }}-collapse" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            {% display_event event omit_title=True omit_time=True omit_youtube=True %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
       </div>
+      <div class="col-lg-4">
+        <h2><a href="{% url 'blog' %}">Recent Posts</a></h2>
+        <div id="posts" class="panel-group">
+          {% for post in posts %}
+              <div class="panel panel-default">
+                  <div class="panel-heading">
+                      <h3 class="panel-title">
+                          <a href="{{ post.get_absolute_url }}">
+                              {{ post.title }}
+                          </a>
+                          <a data-toggle="collapse" data-parent="#posts" class="accordion-toggle" href="#post-{{ forloop.counter }}-collapse">
+                              <span class="glyphicon glyphicon-collapse-down"></span>
+                          </a>
+                      </h3>
+                      {% include "blog/post-tagline.html" %}
+                  </div>
+                  <div id="post-{{ forloop.counter }}-collapse" class="panel-collapse collapse">
+                      <div class="panel-body">
+                          {{ post.teaser }}
+                          <a href="{{ post.get_absolute_url }}">Read more...</a>
+                      </div>
+                  </div>
+              </div>
+          {% endfor %}
+        </div>
+     </div>
+      <div class="col-lg-4">
+        <h2>Donate</h2>
+        <button type="button" class="btn btn-primary btn-lg">Donate Now</button>
+        {% if donor %}
+          <h3>Featured {{ donor_level }} Sponsor:</h3>
+          {% include "support/donor_acknowledgement.html" %}
+        {% endif %}
+      </div>
     </div>
+  </div>
+  {% include "blog/post-count-js.html" %}
 {% endblock %}

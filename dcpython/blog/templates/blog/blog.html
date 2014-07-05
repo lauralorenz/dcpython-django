@@ -27,9 +27,11 @@
             {% for post in posts %}
                 <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
                 {% include "blog/post-tagline.html" %}
-                <p>{{ post.teaser }}</p>
+                {{ post.teaser }}
+                <a href="{{ post.get_absolute_url }}">Read more...</a>
             {% endfor %}
             </div>
         </div>
     </div>
+    {% include "blog/post-count-js.html" %}
 {% endblock %}
