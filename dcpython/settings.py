@@ -230,13 +230,13 @@ if "DATABASE_URL" in os.environ:
        '/vagrant/dcpython/fixtures',
     )
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
-
 if VAGRANT:
     EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
     INSTALLED_APPS.remove('cumulus')
+    INSTALLED_APPS.remove('djangosecure')
     STATIC_URL = '/static/'
 else:
     DEFAULT_FILE_STORAGE = 'cumulus.storage.SwiftclientStorage'
     STATICFILES_STORAGE = 'cumulus.storage.SwiftclientStaticStorage'
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
