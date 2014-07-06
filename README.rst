@@ -153,3 +153,30 @@ Push changes to your github repo::
 	$ git push -u origin name-of-branch
 
 Now, go to github, select the branch you just pushed from the drop-down, then click "pull request" to request your changes be merged with master.
+
+Deployment
+----------
+
+Heroku is generously donating servers. Rackspace is generously donating storage/static file serve.
+
+On Heroku:
+ * `dcpython-develop` - the test server
+ * `dcpython` - the production server
+
+You must set up your repository in order to deploy:
+
+1. Install Heroku toolbelt: https://toolbelt.heroku.com/
+1. `git remote add heroku git@heroku.com:dcpython.git`
+1. `git remote add forked git@heroku.com:dcpython-develop.git`
+
+To deploy to dev environment:
+
+1. `git push forked master`
+1. `heroku run python manage.py migrate -a dcpython-develop`
+1. `heroku run ./manage.py collectstatic --noinput -a dcpython-develop`
+
+To deploy to production:
+
+1. git push heroku master
+1. `heroku run python manage.py migrate -a dcpython`
+1. `heroku run ./manage.py collectstatic --noinput -a dcpython`
