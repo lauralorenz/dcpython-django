@@ -13,6 +13,7 @@ python-dateutil==2.1
 django-localflavor==1.0
 South==0.8.2
 stripe==1.11.0
+pyrax==1.8.1 # 1.8.2 has bug that prevents cumulus working with ssl
 django-cumulus==1.0.12
 django-extensions==1.3.8
 markdown==2.4.1
