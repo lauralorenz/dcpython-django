@@ -224,6 +224,7 @@ CUMULUS = {
     'CONTAINER': get_secret('CLOUDFILES_CONTAINER_MEDIA'),
     'STATIC_CONTAINER': get_secret('CLOUDFILES_CONTAINER_STATIC'),
     'PYRAX_IDENTITY_TYPE': 'rackspace',
+    'USE_SSL': True,
 }
 
 if 'RACKSPACE_CLOUD_USERNAME' in os.environ:

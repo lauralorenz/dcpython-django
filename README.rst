@@ -173,10 +173,8 @@ To deploy to dev environment:
 
 1. `git push forked master`
 1. `heroku run python manage.py migrate -a dcpython-develop`
-1. `heroku run ./manage.py collectstatic --noinput -a dcpython-develop`
 
 To deploy to production:
 
 1. git push heroku master
 1. `heroku run python manage.py migrate -a dcpython`
-1. `heroku run ./manage.py collectstatic --noinput -a dcpython`
