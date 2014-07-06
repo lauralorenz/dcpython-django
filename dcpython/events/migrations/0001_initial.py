@@ -19,10 +19,11 @@ class Migration(SchemaMigration):
             ('address_1', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('address_2', self.gf('django.db.models.fields.CharField')(max_length=200, blank=True)),
             ('address_3', self.gf('django.db.models.fields.CharField')(max_length=200, blank=True)),
+            ('phone', self.gf('django.db.models.fields.CharField')(default='', max_length=15, blank=True)),
             ('city', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('country', self.gf('django.db.models.fields.CharField')(max_length=2)),
             ('zip_code', self.gf('django.db.models.fields.CharField')(max_length=5, blank=True)),
-            ('repinned', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('repinned', self.gf('django.db.models.fields.BooleanField')()),
         ))
         db.send_create_signal(u'events', ['Venue'])
 
@@ -84,7 +85,8 @@ class Migration(SchemaMigration):
             'lon': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '9', 'decimal_places': '6'}),
             'meetup_id': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '32'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'repinned': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'phone': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '15', 'blank': 'True'}),
+            'repinned': ('django.db.models.fields.BooleanField', [], {}),
             'state': ('django.db.models.fields.CharField', [], {'max_length': '2'}),
             'zip_code': ('django.db.models.fields.CharField', [], {'max_length': '5', 'blank': 'True'})
         }
