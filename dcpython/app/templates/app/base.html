@@ -2,14 +2,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% block extra_head %}{% endblock extra_head %}
+
     <title>{% block title %}Title{% endblock %}</title>
 
     {% block stylesheets %}
         {% bootstrap_css %}
         <link rel="stylesheet" href="{{ STATIC_URL }}css/dcpython.css" type="text/css">
     {% endblock stylesheets %}
-
-    {% block extra_head %}{% endblock extra_head %}
 </head>
 <body class="{% block body_classes %}{% if PATH_HIERARCHY %}section-{{ PATH_HIERARCHY.0}}{% else %}homepage{% endif %}{% endblock body_classes %}">
 <div class="wrapper">
