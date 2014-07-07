@@ -102,7 +102,7 @@ MEDIA_URL = '/media/'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = 'http://a6bae61d3961d75816d5-a431acd58fa5f93feaafb5ec015e9d87.r11.cf2.rackcdn.com/'
+STATIC_URL = get_secret('CLOUDFILES_CONTAINER_STATIC_URL', '/static/')
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -121,7 +121,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '!a7_kr2zeol$1f1znql=#+z-eonwy1%t1%3$u@_r4dhnn=_gmx'
+SECRET_KEY = get_secret('SECRET_KEY', 'not a secret!!')
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -224,6 +224,7 @@ CUMULUS = {
     'CONTAINER': get_secret('CLOUDFILES_CONTAINER_MEDIA'),
     'STATIC_CONTAINER': get_secret('CLOUDFILES_CONTAINER_STATIC'),
     'PYRAX_IDENTITY_TYPE': 'rackspace',
+    'USE_SSL': True,
 }
 
 if 'RACKSPACE_CLOUD_USERNAME' in os.environ:
@@ -231,7 +232,6 @@ if 'RACKSPACE_CLOUD_USERNAME' in os.environ:
     STATICFILES_STORAGE = 'cumulus.storage.SwiftclientStaticStorage'
 else:
     INSTALLED_APPS.remove('cumulus')
-    STATIC_URL = '/static/'
 
 # load sample data
 if "DATABASE_URL" in os.environ:
