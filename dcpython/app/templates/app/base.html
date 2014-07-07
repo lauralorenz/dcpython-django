@@ -19,7 +19,9 @@
 
       ga('create', '{{ GOOGLE_ANALYTICS_ID }}', 'auto');
       ga('send', 'pageview');
+
     </script>
+
 </head>
 <body class="{% block body_classes %}{% if PATH_HIERARCHY %}section-{{ PATH_HIERARCHY.0}}{% else %}homepage{% endif %}{% endblock body_classes %}">
 <div class="wrapper">
