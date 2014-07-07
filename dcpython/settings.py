@@ -13,6 +13,8 @@ VAGRANT = 'vagrant' in BASE_DIR
 
 MEETUP_API_KEY = get_secret("MEETUP_API_KEY")
 GOOGLE_API_KEY = get_secret("GOOGLE_API_KEY")
+GOOGLE_ANALYTICS_ID = get_secret("GOOGLE_ANALYTICS_ID")
+GOOGLE_VERIFICATION_ID = get_secret("GOOGLE_VERIFICATION_ID")
 YOUTUBE_CHANNEL_ID = get_secret('YOUTUBE_CHANNEL_ID', 'UCGQZd1FaRdbZGnOuzh_n9Zg')
 STRIPE_PUBLIC = get_secret("STRIPE_PUBLIC", "pk_test_PqW3MffbT30GKcBFxChXmRXn")
 STRIPE_PRIVATE = get_secret("STRIPE_PRIVATE", "sk_test_zuwbBUyf1nDRwjaVNFxLAHil")
@@ -162,6 +164,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.tz',
     'django.contrib.messages.context_processors.messages',
     'dcpython.app.context_processors.path_hierarchy',
+    'dcpython.app.context_processors.google_analytics',
 )
 
 INSTALLED_APPS = [
