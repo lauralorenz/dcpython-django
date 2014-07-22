@@ -9,16 +9,6 @@ We use **Git version control** and `GitHub <http://www.github.com>`_ for project
 
 We use the `Vagrant <http://www.vagrantup.com>`_ development environment. Vagrant allows us to standardize our development and production environments and makes it easy for everybody to get up and running. Vagrant creates a virtual machine, sets up django, database, and everything, then mirrors and syncs the project source code on both your machine and the vm. That way, you make changes to the code on your machine, the changes are mirrored in the vm. Then you run Django on the VM. Now, you can do local development, but you don't have to set up Django and the Database. Very cool.
 
-Plan
-----
-
-Pages we want to get done by 5pm on Tuesday, October 9th, 2013:
-
-#. Events page
-#. Home page
-#. Donation page
-#. About us
-#. Cool links (resources)
 
 Installation
 ------------
@@ -43,10 +33,6 @@ Clone your copy of github repository to your working directory (replace <your-us
 Install Vagrant caching plugin::
 
 	$ vagrant plugin install vagrant-cachier
-	
-Create a new ubuntu virtual machine called precise32::
-
-    $ vagrant box add precise32 http://files.vagrantup.com/precise32.box
 
 Start the vagrant environment::
 
@@ -59,10 +45,13 @@ Log into the vagrant vm::
     $ vagrant ssh
     $ cd /vagrant
 
+
 Sync the db::
 
     $ python /vagrant/manage.py syncdb --noinput
     $ python /vagrant/manage.py migrate
+    $ /vagrant/manage.py loaddata /vagrant/dcpython/app/fixtures/debug_data.json
+	$ /vagrant/manage.py loaddata /vagrant/dcpython/events/fixtures/debug_data.json
 
 Start the django server::
 
@@ -157,3 +146,28 @@ Push changes to your github repo::
 	$ git push -u origin name-of-branch
 
 Now, go to github, select the branch you just pushed from the drop-down, then click "pull request" to request your changes be merged with master.
+
+Deployment
+----------
+
+Heroku is generously donating servers. Rackspace is generously donating storage/static file serve.
+
+On Heroku:
+ * `dcpython-develop` - the test server
+ * `dcpython` - the production server
+
+You must set up your repository in order to deploy:
+
+1. Install Heroku toolbelt: https://toolbelt.heroku.com/
+1. `git remote add heroku git@heroku.com:dcpython.git`
+1. `git remote add forked git@heroku.com:dcpython-develop.git`
+
+To deploy to dev environment:
+
+1. `git push forked master`
+1. `heroku run python manage.py migrate -a dcpython-develop`
+
+To deploy to production:
+
+1. git push heroku master
+1. `heroku run python manage.py migrate -a dcpython`

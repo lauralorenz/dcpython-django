@@ -5,11 +5,22 @@ from django.db import models
 from localflavor.us.models import PhoneNumberField
 from PIL import Image
 import imghdr
-import StringIO
 from django.core.files.base import ContentFile
 from datetime import date
 from django.db.models import Q
 import random
+from django.conf import settings
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
+if settings.DEFAULT_FILE_STORAGE == 'cumulus.storage.SwiftclientStorage':
+    from cumulus.storage import SwiftclientStorage
+    storage = SwiftclientStorage()
+else:
+    from django.core.files.storage import FileSystemStorage
+    storage = FileSystemStorage
 
 LEVEL_DATA = (
     ("P", "Platinum", 1000),
@@ -35,7 +46,7 @@ DL_INDEX = {
 DONATION_TYPES = (
 #    ("B", "Bank Account"),
     ("C", "Credit Card"),
-    ("P", "PayPal"),
+#    ("P", "PayPal"),
     ("G", "Pledge"),
 )
 
@@ -64,7 +75,7 @@ class Donor(models.Model):
     public_name = models.CharField(max_length=100, verbose_name="Display Name", blank=True, null=True)
     public_url = models.URLField(blank=True, null=True, verbose_name="Display Url")
     public_slogan = models.CharField(max_length=200, verbose_name="Display Slogan", blank=True, null=True)
-    public_logo = models.ImageField(upload_to="donor_logos", verbose_name="Display Logo", blank=True, null=True)
+    public_logo = models.ImageField(storage=storage, upload_to="donor_logos", verbose_name="Display Logo", blank=True, null=True)
 
 
     level = models.CharField(max_length=1, choices=DONOR_LEVELS, blank=True, null=True, help_text="Override levels specified by donations if not past 'valid until'")
@@ -73,13 +84,18 @@ class Donor(models.Model):
     valid_until = models.DateField(blank=True, null=True, help_text="Specify a date until which the level specified for the donor is valid. After, donation levels will control.")
 
     objects = DonorManager()
+
+    @property
+    def logoIO(self):
+        return StringIO(self.public_logo.file.read())
+
     def save (self, *args, **kwargs):
         # ensure there is a secret
         if not self.secret:
             self.secret = base64.urlsafe_b64encode(os.urandom(64))
         # ensure the image is in a valid format
         if self.public_logo:
-            image = self.public_logo.file
+            image = self.logoIO
             valid_image = self.process_image(image)
             if valid_image != image:
                 self.public_logo.save("{}.png".format(self.pk), valid_image, save=False)
@@ -115,7 +131,7 @@ class Donor(models.Model):
             image = new_image
 
         # generate a png
-        string_file = StringIO.StringIO()
+        string_file = StringIO()
         image.save(string_file, "PNG")
         string_file.seek(0)
         f = ContentFile(string_file.read())

@@ -12,9 +12,11 @@ sudo apt-get upgrade
 # install Heroku
 wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
 
-# install apt packages
-sudo apt-get install postgresql postgresql-server-dev-all python-dev python-pip -y
+# install postgres packages
+sudo apt-get install postgresql postgresql-server-dev-all -y
 
+# install python packages
+sudo apt-get install python-dev python-pip libjpeg-dev -y
 # install all python modules in requirements.txt
 sudo pip install -r /vagrant/requirements.txt
 
@@ -29,4 +31,5 @@ sudo -u postgres psql -c "alter user postgres with password '1234';"
 sudo -u postgres psql -c 'CREATE DATABASE dcpython;'
 /vagrant/manage.py syncdb
 /vagrant/manage.py migrate
-/vagrant/manage.py 
+/vagrant/manage.py loaddata /vagrant/dcpython/app/fixtures/debug_data.json
+/vagrant/manage.py loaddata /vagrant/dcpython/events/fixtures/debug_data.json
