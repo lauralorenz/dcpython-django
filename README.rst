@@ -102,7 +102,7 @@ Start New Feature
 
 Merge any changes from master::
 
-	$ git pull https://github.com/DCPython/dcpython-django.git develop
+	$ git pull https://github.com/DCPython/dcpython-django.git
 
 List all the changes in this branch::
 
@@ -139,7 +139,7 @@ Merge Feature
 
 Merge any changes from master that have occurred while you were programming::
 
-	$ git pull https://github.com/DCPython/dcpython-django.git develop
+	$ git pull https://github.com/DCPython/dcpython-django.git
 
 Push changes to your github repo::
 
