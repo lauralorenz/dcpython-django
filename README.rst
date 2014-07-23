@@ -38,7 +38,8 @@ Start the vagrant environment::
 
     $ vagrant up
 
-.. Note:: TODO - shouldn't have to do anything else, but getting a permissions issue with postgres - help needed
+YOU WILL GET HUGE RED ERRORS: check to ensure this is a permissions issue with postgres, then continue with these instructions
+TODO - please help me fix this bug!
 
 Log into the vagrant vm::
 
@@ -51,7 +52,7 @@ Sync the db::
     $ python /vagrant/manage.py syncdb --noinput
     $ python /vagrant/manage.py migrate
     $ /vagrant/manage.py loaddata /vagrant/dcpython/app/fixtures/debug_data.json
-	$ /vagrant/manage.py loaddata /vagrant/dcpython/events/fixtures/debug_data.json
+    $ /vagrant/manage.py loaddata /vagrant/dcpython/events/fixtures/debug_data.json
 
 Start the django server::
 
