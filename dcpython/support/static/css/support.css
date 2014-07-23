@@ -5,6 +5,7 @@
     text-align: center;
     height: 100px;
     margin: 10px;
+    border: solid red 5px;
 }
 
 .donor_lvl h1 {
@@ -20,15 +21,19 @@
 
 .platinum {
     background-color: #f6fafa;
+    border: solid #f6fafa 5px;
 }
 .gold {
     background-color: gold;
+    border: solid gold 5px;
 }
 .silver {
     background-color: silver;
+    border: solid silver 5px;
 }
 .bronze {
     background-color: #C69633;
+    border: solid #C69633 5px;
 }
 .donor_lvl.active {
     border: solid black 5px;
