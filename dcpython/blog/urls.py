@@ -1,7 +1,7 @@
 # encoding: utf-8
 from __future__ import absolute_import
+from dcpython.blog.rss import BlogFeed
 from django.conf.urls import patterns, url
-
 from dcpython.blog.views import PostYearArchiveView, PostMonthArchiveView, PostDetail
 
 
