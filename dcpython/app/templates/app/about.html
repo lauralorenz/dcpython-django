@@ -2,6 +2,11 @@
 
 {% block title %}About Us{% endblock %}
 
+{% block breadcrumbs %}
+    <li><a href="{% url 'about_us' %}">About Us</a></li>
+{% endblock breadcrumbs %}
+
+
 {% block content %}
 <div class="container">
   <!-- Example row of columns -->
