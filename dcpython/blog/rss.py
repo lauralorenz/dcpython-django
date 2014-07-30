@@ -14,4 +14,4 @@ class BlogFeed(Feed):
         return item.title
 
     def item_description(self, item):
-        return item.description
+        return item.teaser
