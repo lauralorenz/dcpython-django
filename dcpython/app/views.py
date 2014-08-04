@@ -7,7 +7,7 @@ from django.conf import settings
 def home(request):
     upcoming = Event.objects.upcoming()[:3]
     donor = Donor.objects.random()
-    posts = Post.objects.all()[:3]
+    posts = Post.objects.published()[:3]
     return render(request, 'app/home.html', {"upcoming": upcoming, "posts": posts, "donor": donor, "donor_level": donor.get_level()[1] if donor else None, 'GOOGLE_VERIFICATION_ID': settings.GOOGLE_VERIFICATION_ID})
 
 def about(request):

@@ -2,6 +2,11 @@
 
 {% block title %}Update information for {{ name }}{% endblock %}
 
+{% block breadcrumbs %}
+    <li><a href="{% url 'support' %}">Donate</a></li>
+    <li class="active">Profile</li>
+{% endblock breadcrumbs %}
+
 {% block content %}
 {% load bootstrap3 %}
     <div class="container">
