@@ -75,11 +75,11 @@
      </div>
       <div class="col-lg-4">
         <h2><a href="{% url 'support' %}">Donate</a></h2>
-        <a class="btn btn-primary btn-lg" href="{% url 'support' %}">Donate Now!</a>
         {% if donor %}
           <h3>Featured {{ donor_level }} Sponsor</h3>
           {% include "support/donor_acknowledgement.html" %}
         {% endif %}
+        <a class="btn btn-primary btn-lg" href="{% url 'support' %}">Donate Now!</a>
       </div>
     </div>
   </div>
