@@ -23,7 +23,7 @@ else:
     storage = FileSystemStorage()
 
 LEVEL_DATA = (
-    ("A", "aws", 2500),
+    ("A", "Andrew W. Singer Memorial Level", 2500),
     ("P", "Platinum", 1000),
     ("G", "Gold", 500),
     ("S", "Silver", 250),
@@ -56,7 +56,9 @@ class DonorManager(models.Manager):
     def active(self):
         """ return all active donors - that is donors who have been reviewed and have at least one valid, reviwed donation """
         # it is quite possible this query does not actually do what I hope it does.
-        return self.filter(reviewed=True, donations__reviewed=True).filter(Q(valid_until__gte=date.today()) | Q(donations__valid_until__gte=date.today()))
+        return self.filter(reviewed=True) \
+                   .filter(Q(valid_until__gte=date.today()) | \
+                           Q(donations__valid_until__gte=date.today(), donations__reviewed=True))
 
     def random(self):
         """ return one active donor chosen at random, weighted by their level's minimum donation amount """
