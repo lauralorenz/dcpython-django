@@ -93,7 +93,7 @@ class Donor(models.Model):
     def logoIO(self):
         return StringIO(self.public_logo.file.read())
 
-    def save (self, *args, **kwargs):
+    def save(self, *args, **kwargs):
         # ensure there is a secret
         if not self.secret:
             self.secret = base64.urlsafe_b64encode(os.urandom(64))
@@ -177,7 +177,7 @@ class Donation(models.Model):
     level = models.CharField(max_length=1, choices=DONOR_LEVELS, blank=True, null=True)
     reviewed = models.BooleanField(default=False)
 
-    def save (self, *args, **kwargs):
+    def save(self, *args, **kwargs):
         if not self.level:
             for lvl in LEVEL_DATA:
                 if self.donation >= lvl[2]:

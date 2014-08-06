@@ -170,7 +170,7 @@
         </div>
       </div>
     </div>
-    {% for level_name, donors in all_donors %}
+    {% for level_name, donors in all_donors.items %}
     <div class="row">
       <div class="col-lg-12">
         <h2>{{ level_name }}</h2>
@@ -183,6 +183,7 @@
       </div>
     {% if forloop.counter|divisibleby:3 %}
     </div>
+  </br>
     <div class="row">
     {% endif %}
     {% endfor %}

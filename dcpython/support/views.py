@@ -1,7 +1,9 @@
 # import balanced
-import stripe
 import json
+import datetime
+from collections import OrderedDict
 
+import stripe
 from django.core.mail import send_mail, mail_admins
 from dcpython.support.forms import DonorForm, PublicDonorForm, DonationForm
 from dcpython.support.models import Donor, Donation
@@ -9,9 +11,8 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext, loader
-import datetime
-stripe.api_key = settings.STRIPE_PRIVATE
 
+stripe.api_key = settings.STRIPE_PRIVATE
 
 def andrew_w_singer(request):
     """
@@ -24,24 +25,24 @@ def support(request):
     # get all donors that are not pending and that have a valid donation
     all_donors = Donor.objects.active()
     context = RequestContext(request)
+    all_sorted_donors = OrderedDict();
 
-    (aws_donors, plat_donors, gold_donors, silver_donors,
-        bronze_donors, individual_donors, other_donors) = [],[],[],[],[],[],[]
+    (all_sorted_donors["Andrew W. Singer"], all_sorted_donors["Platinum"],
+        all_sorted_donors["Gold"], all_sorted_donors["Silver"],
+        all_sorted_donors["Bronze"], all_sorted_donors["Individual"],
+        all_sorted_donors["Other"]) = [], [], [], [], [], [] ,[]
+
     for donor in all_donors:
         lvl = donor.get_level()[0]
 
-        if lvl == 'A': aws_donors.append(donor)
-        elif lvl == 'P': plat_donors.append(donor)
-        elif lvl == 'G': gold_donors.append(donor)
-        elif lvl == 'S': silver_donors.append(donor)
-        elif lvl == 'B': bronze_donors.append(donor)
-        elif lvl == 'I': individual_donors.append(donor)
-        elif lvl == 'O': other_donors.append(donor)
+        if lvl == 'A': all_sorted_donors["Andrew W. Singer"].append(donor)
+        elif lvl == 'P': all_sorted_donors["Platinum"].append(donor)
+        elif lvl == 'G': all_sorted_donors["Gold"].append(donor)
+        elif lvl == 'S': all_sorted_donors["Silver"].append(donor)
+        elif lvl == 'B': all_sorted_donors["Bronze"].append(donor)
+        elif lvl == 'I': all_sorted_donors["Individual"].append(donor)
+        elif lvl == 'O': all_sorted_donors["Other"].append(donor)
 
-    all_sorted_donors = [("Andrew W. Singer", aws_donors), ("Platinum", plat_donors),
-                    ("Gold", gold_donors), ("Silver", silver_donors),
-                    ("Bronze", bronze_donors), ("Individual", individual_donors),
-                    ("Other", other_donors)]
     context.update({"donor_form": DonorForm(), "donation_form": DonationForm,
                      "stripe_public": settings.STRIPE_PUBLIC,
                      "all_donors": all_sorted_donors,
