@@ -23,15 +23,29 @@ def andrew_w_singer(request):
 def support(request):
     # get all donors that are not pending and that have a valid donation
     all_donors = Donor.objects.active()
-
-    # create a dict of all active donors, sorted into their respective levels
-    levels = {}
-    for donor in all_donors:
-        donors = levels.setdefault(donor.get_level()[1], [])
-        donors.append(donor)
-
     context = RequestContext(request)
-    context.update({"donor_form": DonorForm(), "donation_form": DonationForm, "stripe_public": settings.STRIPE_PUBLIC, "levels": levels })
+
+    (aws_donors, plat_donors, gold_donors, silver_donors,
+        bronze_donors, individual_donors, other_donors) = [],[],[],[],[],[],[]
+    for donor in all_donors:
+        lvl = donor.get_level()[0]
+
+        if lvl == 'A': aws_donors.append(donor)
+        elif lvl == 'P': plat_donors.append(donor)
+        elif lvl == 'G': gold_donors.append(donor)
+        elif lvl == 'S': silver_donors.append(donor)
+        elif lvl == 'B': bronze_donors.append(donor)
+        elif lvl == 'I': individual_donors.append(donor)
+        elif lvl == 'O': other_donors.append(donor)
+
+    all_sorted_donors = [("Andrew W. Singer", aws_donors), ("Platinum", plat_donors),
+                    ("Gold", gold_donors), ("Silver", silver_donors),
+                    ("Bronze", bronze_donors), ("Individual", individual_donors),
+                    ("Other", other_donors)]
+    context.update({"donor_form": DonorForm(), "donation_form": DonationForm,
+                     "stripe_public": settings.STRIPE_PUBLIC,
+                     "all_donors": all_sorted_donors,
+                     "no_logo_tiers": ["Other", "Individual"]})
     return render(request, 'support/support.html', context)
 
 def donor_update(request, secret=None):
@@ -52,7 +66,7 @@ def donor_update(request, secret=None):
 
 def make_donation(request):
     """
-    this method is called via ajax by the donate page. 
+    this method is called via ajax by the donate page.
     if form is invalid, returns form containing error messages else,
     makes debit and redirects.
     """
@@ -74,7 +88,7 @@ def make_donation(request):
     donation_data = donation_form.cleaned_data
     donation_type = donation_data["donation_type"]
     donation_amount = donation_data["donation"]
-    
+
     donor_data = donor_form.cleaned_data
 
     if donation_type == "C":
