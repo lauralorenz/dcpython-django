@@ -171,6 +171,7 @@
       </div>
     </div>
     {% for level_name, donors in all_donors.items %}
+    {% if donors %}
     <div class="row">
       <div class="col-lg-12">
         <h2>{{ level_name }}</h2>
@@ -188,5 +189,6 @@
     {% endif %}
     {% endfor %}
     </div>
+  {% endif %}
   {% endfor %}
   {% endblock %}

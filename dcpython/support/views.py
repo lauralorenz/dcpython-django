@@ -32,10 +32,6 @@ def support(request):
     for donor in all_donors:
         all_sorted_donors[donor.get_level()[1]].append(donor)
 
-    for level in LEVEL_DATA:
-        if not all_sorted_donors[level[1]]:
-            del all_sorted_donors[level[1]]
-
     context.update({"donor_form": DonorForm(), "donation_form": DonationForm,
                      "stripe_public": settings.STRIPE_PUBLIC,
                      "all_donors": all_sorted_donors,
