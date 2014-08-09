@@ -1,17 +1,18 @@
 # import balanced
-import stripe
 import json
+import datetime
+from collections import OrderedDict
 
+import stripe
 from django.core.mail import send_mail, mail_admins
 from dcpython.support.forms import DonorForm, PublicDonorForm, DonationForm
-from dcpython.support.models import Donor, Donation
+from dcpython.support.models import Donor, Donation, LEVEL_DATA
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.template import RequestContext, loader
-import datetime
-stripe.api_key = settings.STRIPE_PRIVATE
 
+stripe.api_key = settings.STRIPE_PRIVATE
 
 def andrew_w_singer(request):
     """
@@ -23,15 +24,18 @@ def andrew_w_singer(request):
 def support(request):
     # get all donors that are not pending and that have a valid donation
     all_donors = Donor.objects.active()
-
-    # create a dict of all active donors, sorted into their respective levels
-    levels = {}
-    for donor in all_donors:
-        donors = levels.setdefault(donor.get_level()[1], [])
-        donors.append(donor)
-
     context = RequestContext(request)
-    context.update({"donor_form": DonorForm(), "donation_form": DonationForm, "stripe_public": settings.STRIPE_PUBLIC, "levels": levels })
+
+    #Pairs like ("Platnum", [donor_obj])
+    all_sorted_donors = OrderedDict([(level[1], []) for level in LEVEL_DATA]);
+
+    for donor in all_donors:
+        all_sorted_donors[donor.get_level()[1]].append(donor)
+
+    context.update({"donor_form": DonorForm(), "donation_form": DonationForm,
+                     "stripe_public": settings.STRIPE_PUBLIC,
+                     "all_donors": all_sorted_donors,
+                     "no_logo_tiers": ["Other", "Individual"]})
     return render(request, 'support/support.html', context)
 
 def donor_update(request, secret=None):
@@ -52,7 +56,7 @@ def donor_update(request, secret=None):
 
 def make_donation(request):
     """
-    this method is called via ajax by the donate page. 
+    this method is called via ajax by the donate page.
     if form is invalid, returns form containing error messages else,
     makes debit and redirects.
     """
@@ -74,7 +78,7 @@ def make_donation(request):
     donation_data = donation_form.cleaned_data
     donation_type = donation_data["donation_type"]
     donation_amount = donation_data["donation"]
-    
+
     donor_data = donor_form.cleaned_data
 
     if donation_type == "C":
