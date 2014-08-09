@@ -6,7 +6,7 @@ from collections import OrderedDict
 import stripe
 from django.core.mail import send_mail, mail_admins
 from dcpython.support.forms import DonorForm, PublicDonorForm, DonationForm
-from dcpython.support.models import Donor, Donation
+from dcpython.support.models import Donor, Donation, LEVEL_DATA
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
@@ -25,23 +25,12 @@ def support(request):
     # get all donors that are not pending and that have a valid donation
     all_donors = Donor.objects.active()
     context = RequestContext(request)
-    all_sorted_donors = OrderedDict();
 
-    (all_sorted_donors["Andrew W. Singer"], all_sorted_donors["Platinum"],
-        all_sorted_donors["Gold"], all_sorted_donors["Silver"],
-        all_sorted_donors["Bronze"], all_sorted_donors["Individual"],
-        all_sorted_donors["Other"]) = [], [], [], [], [], [] ,[]
+    #Pairs like ("Platnum", [donor_obj])
+    all_sorted_donors = OrderedDict([(level[1], []) for level in LEVEL_DATA]);
 
     for donor in all_donors:
-        lvl = donor.get_level()[0]
-
-        if lvl == 'A': all_sorted_donors["Andrew W. Singer"].append(donor)
-        elif lvl == 'P': all_sorted_donors["Platinum"].append(donor)
-        elif lvl == 'G': all_sorted_donors["Gold"].append(donor)
-        elif lvl == 'S': all_sorted_donors["Silver"].append(donor)
-        elif lvl == 'B': all_sorted_donors["Bronze"].append(donor)
-        elif lvl == 'I': all_sorted_donors["Individual"].append(donor)
-        elif lvl == 'O': all_sorted_donors["Other"].append(donor)
+        all_sorted_donors[donor.get_level()[1]].append(donor)
 
     context.update({"donor_form": DonorForm(), "donation_form": DonationForm,
                      "stripe_public": settings.STRIPE_PUBLIC,
