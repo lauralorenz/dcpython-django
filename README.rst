@@ -160,15 +160,15 @@ On Heroku:
 You must set up your repository in order to deploy:
 
 1. Install Heroku toolbelt: https://toolbelt.heroku.com/
-1. `git remote add heroku git@heroku.com:dcpython.git`
-1. `git remote add forked git@heroku.com:dcpython-develop.git`
+1. ``git remote add heroku git@heroku.com:dcpython.git``
+1. ``git remote add forked git@heroku.com:dcpython-develop.git``
 
 To deploy to dev environment:
 
-1. `git push forked master`
-1. `heroku run python manage.py migrate -a dcpython-develop`
+1. ``git push forked master``
+1. ``heroku run python manage.py migrate -a dcpython-develop``
 
 To deploy to production:
 
-1. git push heroku master
-1. `heroku run python manage.py migrate -a dcpython`
+1. ``git push heroku master``
+1. ``heroku run python manage.py migrate -a dcpython``
