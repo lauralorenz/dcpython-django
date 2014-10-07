@@ -22,17 +22,17 @@ Create a `GitHub <http://www.github.com>`_ account.
 
 While signed into github, go to https://github.com/DCPython/dcpython-django and click the "fork" button. This will create a fork (or copy) of the dcpython-django application in your github account.
 
-From the commandline 
+From the commandline
 ++++++++++++++++++++
 
 Clone your copy of github repository to your working directory (replace <your-username> with  your github username)::
 
-	$ git clone git@github.com:<your-username>/dcpython-django.git 
-	$ cd dcpython-django
+    $ git clone git@github.com:<your-username>/dcpython-django.git
+    $ cd dcpython-django
 
 Install Vagrant caching plugin::
 
-	$ vagrant plugin install vagrant-cachier
+    $ vagrant plugin install vagrant-cachier
 
 Start the vagrant environment::
 
@@ -76,20 +76,20 @@ Destroy the development environment::
 
 Log into the development environment::
 
-	$ vagrant ssh
+    $ vagrant ssh
 
 From the vagrant ssh command line
 +++++++++++++++++++++++++++++++++
 
 Start django::
 
-	$ cd /vagrant
-	$ foreman start
+    $ cd /vagrant
+    $ foreman start
 
 Django manage.py::
 
-	$ cd /vagrant
-	$ ./manage.py <params>
+    $ cd /vagrant
+    $ ./manage.py <params>
 
 You can visit the django site at http://localhost:5000
 
@@ -103,35 +103,35 @@ Start New Feature
 
 Merge any changes from master::
 
-	$ git pull https://github.com/DCPython/dcpython-django.git
+    $ git pull https://github.com/DCPython/dcpython-django.git
 
 List all the changes in this branch::
 
-	$ git log
+    $ git log
 
 Create a new feature branch in which to make changes::
 
-	$ git checkout -b "descriptive-name-of-branch"
+    $ git checkout -b "descriptive-name-of-branch"
 
 List branches::
 
-	$ git branch
+    $ git branch
 
 Switch to another branch::
 
-	$ git checkout "name-of-branch"
+    $ git checkout "name-of-branch"
 
 View status of your files (which have changed, which are staged for commit)::
 
-	$ git status
+    $ git status
 
 Add files to be committed::
 
-	$ git add name-of-file
+    $ git add name-of-file
 
 Commit changes::
 
-	$ git commit
+    $ git commit
 
 .. Note:: you must add a commit message. first line short title (~50 characters); skip line; detailed description of changes
 
@@ -140,11 +140,11 @@ Merge Feature
 
 Merge any changes from master that have occurred while you were programming::
 
-	$ git pull https://github.com/DCPython/dcpython-django.git
+    $ git pull https://github.com/DCPython/dcpython-django.git
 
 Push changes to your github repo::
 
-	$ git push -u origin name-of-branch
+    $ git push -u origin name-of-branch
 
 Now, go to github, select the branch you just pushed from the drop-down, then click "pull request" to request your changes be merged with master.
 
@@ -160,15 +160,15 @@ On Heroku:
 You must set up your repository in order to deploy:
 
 1. Install Heroku toolbelt: https://toolbelt.heroku.com/
-1. `git remote add heroku git@heroku.com:dcpython.git`
-1. `git remote add forked git@heroku.com:dcpython-develop.git`
+2. ``git remote add heroku git@heroku.com:dcpython.git``
+3. ``git remote add forked git@heroku.com:dcpython-develop.git``
 
 To deploy to dev environment:
 
-1. `git push forked master`
-1. `heroku run python manage.py migrate -a dcpython-develop`
+1. ``git push forked master``
+2. ``heroku run python manage.py migrate -a dcpython-develop``
 
 To deploy to production:
 
-1. git push heroku master
-1. `heroku run python manage.py migrate -a dcpython`
+1. ``git push heroku master``
+2. ``heroku run python manage.py migrate -a dcpython``
