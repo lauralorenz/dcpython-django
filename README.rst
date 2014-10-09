@@ -45,7 +45,7 @@ Log into the vagrant vm::
 
     $ vagrant ssh
     $ cd /vagrant
-    $ sh configure_psql.sh
+    $ sh config_db.sh
 
 Start the django server::
 

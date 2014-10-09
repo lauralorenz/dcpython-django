@@ -30,4 +30,4 @@ sudo pip install -r /vagrant/requirements.txt
 sudo -u postgres createuser --superuser vagrant
 sudo -u postgres psql -c "alter user postgres with password '1234';"
 sudo -u postgres psql -c 'CREATE DATABASE dcpython;'
-/vagrant/configure_psql.sh
+/vagrant/config_db.sh
