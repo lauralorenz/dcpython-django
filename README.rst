@@ -45,14 +45,7 @@ Log into the vagrant vm::
 
     $ vagrant ssh
     $ cd /vagrant
-
-
-Sync the db::
-
-    $ python /vagrant/manage.py syncdb --noinput
-    $ python /vagrant/manage.py migrate
-    $ /vagrant/manage.py loaddata /vagrant/dcpython/app/fixtures/debug_data.json
-    $ /vagrant/manage.py loaddata /vagrant/dcpython/events/fixtures/debug_data.json
+    $ sh configure_psql.sh
 
 Start the django server::
 
