@@ -1,3 +1,4 @@
+#!/bin/sh
 export PYTHONPATH=$PYTHONPATH:/vagrant
 
 # set utf locale for postgres
@@ -29,7 +30,4 @@ sudo pip install -r /vagrant/requirements.txt
 sudo -u postgres createuser --superuser vagrant
 sudo -u postgres psql -c "alter user postgres with password '1234';"
 sudo -u postgres psql -c 'CREATE DATABASE dcpython;'
-/vagrant/manage.py syncdb
-/vagrant/manage.py migrate
-/vagrant/manage.py loaddata /vagrant/dcpython/app/fixtures/debug_data.json
-/vagrant/manage.py loaddata /vagrant/dcpython/events/fixtures/debug_data.json
+/vagrant/config_db.sh
