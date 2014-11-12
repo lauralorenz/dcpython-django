@@ -5,12 +5,33 @@ from django.core.urlresolvers import reverse
 
 class DCPythonTest(TestCase):
 
-    def test_get_requests(self):
-        """
-        Tests that the url routes return a 200 status code.
-        """
-        c = Client()
-        routes = map(reverse, ['about', 'contact', 'deals', 'home', 'legal', 'make_donation', 'resources', 'support'])
-        for route in routes:
-            response = c.get(route)
-            self.assertEqual(response.status_code, 200)
+    def setUp(self):
+        self.c = Client()
+
+    def assert200(self, name):
+        response = self.c.get(reverse(name), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_about(self):
+        self.assert200('about')
+
+    def test_get_contact(self):
+        self.assert200('contact')
+
+    def test_get_deals(self):
+        self.assert200('deals')
+
+    def test_get_home(self):
+        self.assert200('home')
+
+    def test_get_legal(self):
+        self.assert200('legal')
+
+    def test_get_make_donation(self):
+        self.assert200('make_donation')
+
+    def test_get_resources(self):
+        self.assert200('resources')
+
+    def test_get_support(self):
+        self.assert200('support')

@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 
 AUTH_USER_MODEL = 'app.User'
@@ -58,6 +60,15 @@ DATABASES = {
 
 if "DATABASE_URL" in os.environ:
     DATABASES['default'] = dj_database_url.config()
+
+try:
+    import sys
+    print("Creating sqlite test database")
+    if 'test' in sys.argv:
+        DATABASES['default'] = {'ENGINE': 'django.db.backends.sqlite3'}
+except ImportError:
+    print("Tried to set up test database, but sys module could not be imported")
+
 
 # Honor the 'X-Forwarded-Proto' header for request.is_secure()
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

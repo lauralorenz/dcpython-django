@@ -13,7 +13,10 @@ from django.conf import settings
 try:
     from cStringIO import StringIO
 except ImportError:
-    from StringIO import StringIO
+    try:
+        from StringIO import StringIO
+    except ImportError:
+        from io import StringIO
 
 if settings.DEFAULT_FILE_STORAGE == 'cumulus.storage.SwiftclientStorage':
     from cumulus.storage import SwiftclientStorage
