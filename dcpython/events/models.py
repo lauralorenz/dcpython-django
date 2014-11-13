@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils import timezone
+from tinymce.models import HTMLField
 
 from dcpython.app.integration.meetup import get_upcoming_events, get_past_events
 
@@ -113,3 +114,7 @@ class Event(models.Model):
                                                'year': self.local_start_time.year,
                                                'month': self.local_start_time.month,
                                                'day': self.local_start_time.day})
+
+class Presentation(Event):
+    #user = models.ManyToManyField(settings.AUTH_USER_MODEL)
+    title = models.CharField(blank=True, null=True, max_length=100)

@@ -114,6 +114,7 @@ MEDIA_URL = '/media/'
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
 # STATIC_ROOT = 'staticfiles'
+STATIC_ROOT = ROOT_DIR + 'app/static/' #have to specify right now to make tinymce happy since its expecting static files from here
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -181,6 +182,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 INSTALLED_APPS = [
+    'tinymce',
     'cumulus',
     'django.contrib.auth',
     'django.contrib.contenttypes',

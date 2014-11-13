@@ -20,6 +20,7 @@ urlpatterns = patterns('',
     url(r'^resources/$', 'dcpython.app.views.resources', name='resources'),
     url(r'^legal/$', 'dcpython.app.views.legal', name='legal'),
     url(r'^contact/$', 'dcpython.app.views.contact', name='contact'),
+    (r'^tinymce/', include('tinymce.urls')),
     # url(r'^$', 'dcpython.views.home', name='home'),
     # url(r'^dcpython/', include('dcpython.foo.urls')),
 
